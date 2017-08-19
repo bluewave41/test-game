@@ -1,49 +1,32 @@
-/*Socket*/
+var Validator = require('./Validator');
+var Database = require('./Database');
+
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var crypto = require('crypto');
-var mysql = require('mysql');
+var Game = require('./Game');
 
-var db;
-connectDatabase();
-
-var banned = [];
-
-io.on('connection', function(socket) {
-    console.log('connected');
-	socket.on('motherboard', function(id) { //C# motherboard ID received
-		console.log(id);
-		if(banned.indexOf(id) != -1) {
-			socket.emit('unique', 'You are banned.');
-			return
-		}
-		var token = crypto.randomBytes(10).toString('hex'); //generate random 20 character string
-		db.query("INSERT INTO token(id) VALUES('"+token+"')").on('result', function(data) {})
-        .on('end', function() {
-            console.log('end');
-        })
-		socket.emit('unique', token);
-	});
-});
+var db = new Database('localhost', 'root', 'testGame');
+var games = [];
 
 http.listen(3000, function(){
 	console.log('listening on *:3000');
 });
-/*Socket*/
 
-/*Connects to our database*/
-function connectDatabase() {
-    console.log('Connecting to database...');
-    db = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        database: 'testgame'
+io.on('connection', function(socket) {
+    console.log('connected');
+    io.sockets.emit('updateGames', games);
+	socket.on('motherboard', function(id) { //C# motherboard ID received
+        console.log(id);
+        var token = new Validator(id).validate();
+        db.query("INSERT INTO token(id) VALUES('"+token+"')");
+		socket.emit('unique', token);
+    });
+    socket.on('createGame', function(player) {
+        games.push(new Game(player));
+        io.sockets.emit('updateGames', games);
     })
-    db.connect(function(err) {
-        if(err)
-             console.log(err);
-        else
-            console.log('Connected.');
+    socket.on('data', function(data) {
+        eval(data);
     })
-}
+}); 

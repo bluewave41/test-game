@@ -17,3 +17,29 @@ label {
 .container {
     text-align: center;
 }
+
+#lobby {
+	border: 1px solid black;
+	width: 600px;
+	height: 300px;
+	margin-left: auto;
+	margin-right: auto;
+	table-layout: fixed;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+#lobby td, th {
+	width: 50%;
+	outline: 1px solid;
+}
+
+.square {
+	outline: 1px solid;
+	width: 100px;
+	height: 100px;
+	float: left;
+}

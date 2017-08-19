@@ -1,0 +1,21 @@
+<script>
+	var socket = io('http://localhost:3000');
+    $('#createLobby').click(function() {
+        socket.emit('createGame', 'bob');
+    })
+    socket.on('updateGames', function(games) {
+        let lobby = $('#lobby');
+        let dom = '';
+        lobby.html('');
+        dom += ('<table><tr><th>Host</th><th>Players</th></tr>');
+        for(var x=0;x<games.length;x++) {
+            dom += ('<tr><td>'+games[x].host+'</td><td>'+games[x].players.length+'</td></tr>');
+        }
+        dom += ('</table>');
+        lobby.append(dom);
+    })
+</script>
+
+<div id="lobby">
+</div>
+<button id="createLobby">Create Lobby</button>

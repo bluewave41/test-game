@@ -14,8 +14,9 @@ namespace TokenGenerator
 
         public Form1() {
             InitializeComponent();
-            socket = IO.Socket("http://localhost:3000");
+            socket = IO.Socket("http://127.0.0.1:3000");
             socket.On(Socket.EVENT_CONNECT, () => {
+                Console.WriteLine("connected");
             });
 
             socket.On("unique", (data) => {

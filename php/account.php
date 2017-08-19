@@ -35,8 +35,8 @@
             $result = $result->fetch_object()->password;
             if($result == $password) {
                 $sql = "DELETE FROM token WHERE id = '$token'";
-                $conn->query($sql);
-                echo 'Logged in.';
+                //$conn->query($sql);
+                echo 'Success';
             }
             else {
                 echo 'Invalid password';
